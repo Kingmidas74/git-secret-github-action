@@ -1,0 +1,14 @@
+# action.yaml
+name: "Install git-secret"
+description: "Install git secret from sources"
+branding:
+  color: blue
+  icon: code
+inputs:
+  prefix:
+    description: "prefix for installation"
+    required: false
+    default: "usr/local"
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
