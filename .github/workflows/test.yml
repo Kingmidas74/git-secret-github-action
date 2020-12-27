@@ -1,10 +1,14 @@
 name: 'build-test'
 on: # rebuild any PRs and main branch changes
   pull_request:
+    branches:
+      - '**'
   push:
     branches:
-      - main
+      - '**'
       - 'releases/*'
+    tags:
+      - '!**' # prevent running it for tags  
 
 jobs:
   build: # make sure build/ci work properly
@@ -15,9 +19,45 @@ jobs:
           npm install
       - run: |
           npm run all
+  build-test:
+    runs-on: ubuntu-16.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      name: setup node
+      with:
+        node-version: '13.x'
+
+    - name: "install"
+      run: npm ci --production
+
+    - name: "build"
+      run: npm run build
+
+    - name: "package"
+      run: npm run package
+
+    - name: "check if build has changed"
+      if: success()
+      id: has-changes
+      run: echo ::set-env name=LIB_DIFF::$(git diff  --stat -- 'lib') # cause bundle is located in lib folder
+
+    - name: "Commit files"
+      if: ${{ env.LIB_DIFF }}
+      run: |
+          git config --local user.email "buildaction@bot.bot" # fake user email for pushing build
+          git config --local user.name "Build action bot"
+          git commit -m "build action" -a
+    - name: "Push changes"
+      if: ${{ env.LIB_DIFF }}
+      uses: ad-m/github-push-action@master
+      with:
+         github_token: ${{ secrets.GITHUB_TOKEN }}
+         branch: ${{ github.ref }}.  # push to the same branch
+
   test-with-prefix: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-test
     steps:
       - uses: actions/checkout@v2
       - uses: ./
@@ -25,7 +65,7 @@ jobs:
           prefix: "/usr/local-test"
   test-without-prefix: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-test
     steps:
       - uses: actions/checkout@v2
       - uses: ./
