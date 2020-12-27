@@ -38,11 +38,15 @@ jobs:
       run: npm run package
 
     - name: "check if build has changed"
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       if: success()
       id: has-changes
       run: echo ::set-env name=LIB_DIFF::$(git diff  --stat -- 'lib') # cause bundle is located in lib folder
 
     - name: "Commit files"
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       if: ${{ env.LIB_DIFF }}
       run: |
           git config --local user.email "buildaction@bot.bot" # fake user email for pushing build
