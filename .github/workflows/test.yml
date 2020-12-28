@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-16.04
     steps:
     - uses: actions/checkout@v2
+
     - uses: actions/setup-node@v1
       name: setup node
       with:
@@ -33,6 +34,7 @@ jobs:
       run: |
         npm i
         npm run build
+        sudo chmod -R 777 ./lib      
     
     - name: "check if build has changed"
       env:
@@ -42,57 +44,64 @@ jobs:
       run: |
         ls -las
         git status
+        echo "LAST_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
         echo "LIB_DIFF=$([[ $(git status -s lib) ]] && echo '1' || echo '')"  >> $GITHUB_ENV
-        echo "LIB_DIFF=$([[ $(git status -s lib) ]] && echo '1' || echo '')"
-        echo $([[ $(git status -s lib) ]] && echo '1' || echo '')
-        echo test1
-        echo $GITHUB_ENV
-        echo test2
 
     - name: "Commit files"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       if: ${{ env.LIB_DIFF }}
       run: |
-          echo 'commit files 1'
-          echo ${{ env.LIB_DIFF }}
-          echo 'commit files 2'
-          sudo chmod -R 777 ./lib
           git config --local user.email "buildaction@bot.bot" 
           git config --local user.name "Build action bot"
           git add .
           git commit -m "build action"
+          echo "LAST_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
+          echo $LAST_COMMIT
+          echo $GITHUB_ENV
+          git push 
 
-    - name: "Push changes"
-      if: ${{ env.LIB_DIFF }}
-      run: |
-        git status
-        git diff
-        git status lib
-        git push
-
-  test-after-bot:
-    runs-on: ubuntu-latest
+  test:
     needs: build-test
+    runs-on: ubuntu-16.04
     steps:
-      - uses: actions/checkout@v2      
-      - run: |
-          ls -las
-          echo TEST
-          ls ./lib -las
 
-  # test-with-prefix: 
-  #   runs-on: ubuntu-latest
-  #   needs: build-test
+      # Clone this repo
+      - name: Checkout
+        uses: actions/checkout@v2
+            
+      - run: git pull
+
+      # Basic checkout
+      - name: Checkout basic
+        uses: ./
+      
+      # Basic checkout with parameter
+      - name: Checkout basic
+        uses: ./
+        with:
+          prefix: 'usr/local'
+
+  # test:
+  #   needs:
+  #   strategy:
+  #     matrix:
+  #       runs-on: [ubuntu-latest, macos-latest, windows-latest]
+  #   runs-on: ${{ matrix.runs-on }}
+
   #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: ./
+  #     # Clone this repo
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+
+  #     # Basic checkout
+  #     - name: Checkout basic
+  #       uses: ./
+      
+  #     # Basic checkout with parameter
+  #     - name: Checkout basic
+  #       uses: ./
   #       with:
-  #         prefix: "/usr/local-test"
+  #         prefix: 'usr/local'
 
-  # test-without-prefix:
-  #   runs-on: ubuntu-latest
-  #   needs: build-test
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: ./
+          

@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import {ExecOptions} from '@actions/exec'
+import * as coreCommand from '@actions/core/lib/command'
 
 async function run(): Promise<number> {
   try {
@@ -21,13 +22,14 @@ async function run(): Promise<number> {
 
     process.env['PREFIX'] = prefix
 
-    await exec.exec(
-      'git clone',
-      ['https://github.com/sobolevn/git-secret.git', 'git-secret'],
-      options
-    )
-    await exec.exec('sudo make build -C ./git-secret')
-    await exec.exec('sudo make install -C ./git-secret')
+    await exec.exec('sh',['./lib/start.sh', prefix])
+    // await exec.exec(
+    //   'git clone',
+    //   ['https://github.com/sobolevn/git-secret.git', 'git-secret'],
+    //   options
+    // )
+    // await exec.exec('sudo make build -C ./git-secret')
+    // await exec.exec('sudo make install -C ./git-secret')
   } catch (err) {
     const errorAsString: string = (err ?? 'undefined error').toString()
     core.debug('Error: ' + errorAsString)
@@ -40,7 +42,19 @@ async function run(): Promise<number> {
   return 0
 }
 
-run()
+async function cleanup(): Promise<void> {
+  try {
+    console.info('clean up git-secret');
+    await exec.exec('rm -rf ~/git-secret')
+    await exec.exec('rm -rf ./git-secret')
+  } catch (error) {
+    core.warning(error.message)
+  }
+}
+
+if (!(!!process.env['STATE_isPost'])) {
+  coreCommand.issueCommand('save-state', {name: 'isPost'}, 'true')
+  run()
   .then(ret => {
     process.exitCode = ret
   })
@@ -48,3 +62,9 @@ run()
     console.error('run() failed!', error)
     process.exitCode = 1
   })
+}
+else {
+  cleanup()
+}
+
+
