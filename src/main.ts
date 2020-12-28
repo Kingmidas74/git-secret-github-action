@@ -24,6 +24,7 @@ async function run(): Promise<number> {
     }    
     console.log('install git-secret...')
     process.env['PREFIX'] = prefix    
+    await exec.exec('rm',['-rf','/tmp/git-secret'])
     await exec.exec(	   
       'git',	    
       ['clone', 'https://github.com/sobolevn/git-secret.git', '/tmp/git-secret'],	    
