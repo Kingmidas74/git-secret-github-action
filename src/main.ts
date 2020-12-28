@@ -36,7 +36,7 @@ async function run(): Promise<number> {
     return 1
   }
 
-  core.info('install git-secret succeeded')
+  core.info('install git-secret from source succeeded')
   return 0
 }
 
