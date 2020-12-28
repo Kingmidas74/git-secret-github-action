@@ -42,8 +42,8 @@ jobs:
       run: |
         ls -las
         git status
-        echo "LIB_DIFF=$(git diff --stat -- lib)"  >> $GITHUB_ENV
-        echo "LIB_DIFF=$(git diff --stat -- lib)"
+        echo "LIB_DIFF=$([[ $(git status -s lib) ]] && echo '1' || echo '')"  >> $GITHUB_ENV
+        echo "LIB_DIFF=$([[ $(git status -s lib) ]] && echo '1' || echo '')"
         echo $([[ $(git status -s lib) ]] && echo '1' || echo '')
         echo test1
         echo $GITHUB_ENV
