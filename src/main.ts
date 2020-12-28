@@ -2,12 +2,12 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import {ExecOptions} from '@actions/exec'
 import * as coreCommand from '@actions/core/lib/command'
+import * as tc from '@actions/tool-cache';
 
 async function run(): Promise<number> {
   try {
     let myOutput = ''
     let myError = ''
-
     const prefix = core.getInput('prefix', {required: false})
 
     const options: ExecOptions = {}
@@ -17,12 +17,14 @@ async function run(): Promise<number> {
       },
       stderr: (data: Buffer) => {
         myError += data.toString()
-      }
+      },            
     }
 
     console.log('install git-secret...')
     process.env['PREFIX'] = prefix    
-    await exec.exec('./lib/start',[prefix])
+    await exec.exec('git clone https://github.com/sobolevn/git-secret.git /tmp/git-secret')
+    await exec.exec('sudo make build -C /tmp/git-secret', [])
+    await exec.exec('sudo make install -C /tmp/git-secret', [])
     
   } catch (err) {
     const errorAsString: string = (err ?? 'undefined error').toString()

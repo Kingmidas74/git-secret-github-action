@@ -1,6 +1,6 @@
 {
   "name": "git-secret-github-action",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Install git-secret from source",
   "main": "lib/main.js",
@@ -20,7 +20,8 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/exec": "^1.0.4"
+    "@actions/exec": "^1.0.4",
+    "@actions/tool-cache": "^1.6.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",
