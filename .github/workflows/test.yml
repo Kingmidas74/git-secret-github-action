@@ -67,10 +67,8 @@ jobs:
 
     - name: "Push changes"
       if: ${{ env.LIB_DIFF }}
-      uses: ad-m/github-push-action@master
-      with:
-         github_token: ${{ secrets.GITHUB_TOKEN }}
-         branch: ${{ github.ref }}.  # push to the same branch
+      run: |
+        git push
 
   test-with-prefix: 
     runs-on: ubuntu-latest
