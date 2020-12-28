@@ -3,7 +3,7 @@
 
 # Install git-secret
 
-This action [git-secret] into your workspace.
+This action install [git-secret](https://github.com/sobolevn/git-secret) into your workspace.
 
 # Usage
 
