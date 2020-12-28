@@ -1,3 +1,5 @@
+![build-test](https://github.com/Kingmidas74/git-secret-github-action/workflows/build-test/badge.svg)
+
 # Install git-secret
 
 This action [git-secret] into your workspace.
