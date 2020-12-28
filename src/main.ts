@@ -3,6 +3,9 @@ import * as exec from '@actions/exec'
 import {ExecOptions} from '@actions/exec'
 import * as coreCommand from '@actions/core/lib/command'
 import * as tc from '@actions/tool-cache';
+import * as path from "path";
+import * as fs from "fs";
+import * as os from "os";
 
 async function run(): Promise<number> {
   try {
@@ -18,17 +21,16 @@ async function run(): Promise<number> {
       stderr: (data: Buffer) => {
         myError += data.toString()
       },            
-    }
-
+    }    
     console.log('install git-secret...')
     process.env['PREFIX'] = prefix    
     await exec.exec(	   
-      'git clone',	    
-      ['https://github.com/sobolevn/git-secret.git', 'git-secret'],	    
+      'git',	    
+      ['clone', 'https://github.com/sobolevn/git-secret.git', '/tmp/git-secret'],	    
       options	   
     )	   
-    await exec.exec('sudo make build -C ./git-secret')	    // )
-    await exec.exec('sudo make install -C ./git-secret')	    // await exec.exec('sudo make build -C ./git-secret')
+    await exec.exec(`sudo make build -C /tmp/git-secret`,[],options)	    
+    await exec.exec(`sudo make install -C /tmp/git-secret`,[],options)	
 
     
   } catch (err) {
