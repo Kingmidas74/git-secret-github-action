@@ -74,25 +74,24 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-test
     steps:
-      - uses: actions/checkout@v2
-      - run: |
-          echo TEST
+      - uses: actions/checkout@v2      
       - run: |
           ls -las
+          echo TEST
           ls ./lib -las
 
-  test-with-prefix: 
-    runs-on: ubuntu-latest
-    needs: build-test
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./
-        with:
-          prefix: "/usr/local-test"
+  # test-with-prefix: 
+  #   runs-on: ubuntu-latest
+  #   needs: build-test
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: ./
+  #       with:
+  #         prefix: "/usr/local-test"
 
-  test-without-prefix:
-    runs-on: ubuntu-latest
-    needs: build-test
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./
+  # test-without-prefix:
+  #   runs-on: ubuntu-latest
+  #   needs: build-test
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: ./
