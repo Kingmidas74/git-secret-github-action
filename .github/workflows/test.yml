@@ -16,9 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          npm install
+          npm i
       - run: |
-          npm run all
+          npm run build
+
   build-test:
     runs-on: ubuntu-16.04
     steps:
@@ -29,28 +30,23 @@ jobs:
         node-version: '13.x'
 
     - name: "install"
-      run: npm install
-
-    - name: "build"
-      run: npm run build
-
-    - name: "package"
-      run: npm run package
-
+      run: |
+        npm i
+    
     - name: "check if build has changed"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       if: success()
       id: has-changes
-      run: echo ::set-env name=LIB_DIFF::[[ -n $(git status -s dist) ]] || echo ''
+      run: echo $([[ -n $(git status -s lib) ]] || echo '') >> $HAS_CHANGED
 
     - name: "Commit files"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
-      if: ${{ env.LIB_DIFF }}
+      if: ${{ env.HAS_CHANGED }}
       run: |
           echo 'commit files 1'
-          echo ${{ env.LIB_DIFF }}
+          echo ${{ env.HAS_CHANGED }}
           echo 'commit files 2'
           git config --local user.email "buildaction@bot.bot" 
           git config --local user.name "Build action bot"
