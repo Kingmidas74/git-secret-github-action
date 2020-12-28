@@ -22,9 +22,14 @@ async function run(): Promise<number> {
 
     console.log('install git-secret...')
     process.env['PREFIX'] = prefix    
-    await exec.exec('git clone https://github.com/sobolevn/git-secret.git /tmp/git-secret')
-    await exec.exec('sudo make build -C /tmp/git-secret', [])
-    await exec.exec('sudo make install -C /tmp/git-secret', [])
+    await exec.exec(	   
+      'git clone',	    
+      ['https://github.com/sobolevn/git-secret.git', 'git-secret'],	    
+      options	   
+    )	   
+    await exec.exec('sudo make build -C ./git-secret')	    // )
+    await exec.exec('sudo make install -C ./git-secret')	    // await exec.exec('sudo make build -C ./git-secret')
+
     
   } catch (err) {
     const errorAsString: string = (err ?? 'undefined error').toString()
