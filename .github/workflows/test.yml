@@ -38,7 +38,7 @@ jobs:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       if: success()
       id: has-changes
-      run: echo "LIB_DIFF=$([[ $(git status -s lib) ]] && echo '1' || echo '')" >> $GITHUB_ENV
+      run: echo "LIB_DIFF=$(git diff --stat -- lib)"  >> $GITHUB_ENV
 
     - name: "Commit files"
       env:
