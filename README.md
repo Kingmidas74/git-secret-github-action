@@ -1,4 +1,5 @@
 ![build-test](https://github.com/Kingmidas74/git-secret-github-action/workflows/build-test/badge.svg)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/Kingmidas74/git-secret-github-action)
 
 # Install git-secret
 

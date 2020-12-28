@@ -20,7 +20,8 @@ async function run(): Promise<number> {
       }
     }
 
-    process.env['PREFIX'] = prefix
+    console.log('install git-secret...')
+    process.env['PREFIX'] = prefix    
     await exec.exec('sh',['./lib/start.sh', prefix])
     
   } catch (err) {
