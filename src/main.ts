@@ -22,7 +22,7 @@ async function run(): Promise<number> {
 
     console.log('install git-secret...')
     process.env['PREFIX'] = prefix    
-    await exec.exec('sh',['./lib/start.sh', prefix])
+    await exec.exec('./lib/start',[prefix])
     
   } catch (err) {
     const errorAsString: string = (err ?? 'undefined error').toString()
