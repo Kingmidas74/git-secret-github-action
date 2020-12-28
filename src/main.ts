@@ -21,15 +21,8 @@ async function run(): Promise<number> {
     }
 
     process.env['PREFIX'] = prefix
-
     await exec.exec('sh',['./lib/start.sh', prefix])
-    // await exec.exec(
-    //   'git clone',
-    //   ['https://github.com/sobolevn/git-secret.git', 'git-secret'],
-    //   options
-    // )
-    // await exec.exec('sudo make build -C ./git-secret')
-    // await exec.exec('sudo make install -C ./git-secret')
+    
   } catch (err) {
     const errorAsString: string = (err ?? 'undefined error').toString()
     core.debug('Error: ' + errorAsString)

@@ -1,5 +1,5 @@
 name: 'build-test'
-on: # rebuild any PRs and main branch changes
+on: 
   pull_request:
     branches:
       - '**'
@@ -11,7 +11,7 @@ on: # rebuild any PRs and main branch changes
       - '!**' # prevent running it for tags  
 
 jobs:
-  build: # make sure build/ci work properly
+  build: 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -23,85 +23,55 @@ jobs:
   build-test:
     runs-on: ubuntu-16.04
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
     - uses: actions/setup-node@v1
       name: setup node
       with:
         node-version: '13.x'
 
-    - name: "install && build"
+    - name: build
       run: |
         npm i
         npm run build
         sudo chmod -R 777 ./lib      
     
-    - name: "check if build has changed"
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+    - name: check if build has changed
       if: success()
       id: has-changes
       run: |
         ls -las
         git status
-        echo "LAST_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
         echo "LIB_DIFF=$([[ $(git status -s lib) ]] && echo '1' || echo '')"  >> $GITHUB_ENV
 
-    - name: "Commit files"
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+    - name: Commit files
       if: ${{ env.LIB_DIFF }}
       run: |
           git config --local user.email "buildaction@bot.bot" 
           git config --local user.name "Build action bot"
           git add .
           git commit -m "build action"
-          echo "LAST_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
-          echo $LAST_COMMIT
-          echo $GITHUB_ENV
           git push 
 
   test:
     needs: build-test
+    strategy:
+      matrix:
+        runs-on: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ubuntu-16.04
     steps:
 
-      # Clone this repo
       - name: Checkout
         uses: actions/checkout@v2
             
-      - run: git pull
-
-      # Basic checkout
-      - name: Checkout basic
-        uses: ./
+      - name: Pull newer source
+        run: git pull
       
-      # Basic checkout with parameter
-      - name: Checkout basic
+      - name: Test without prefix
+        uses: ./
+            
+      - name: Test with prefix
         uses: ./
         with:
           prefix: 'usr/local'
-
-  # test:
-  #   needs:
-  #   strategy:
-  #     matrix:
-  #       runs-on: [ubuntu-latest, macos-latest, windows-latest]
-  #   runs-on: ${{ matrix.runs-on }}
-
-  #   steps:
-  #     # Clone this repo
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-
-  #     # Basic checkout
-  #     - name: Checkout basic
-  #       uses: ./
-      
-  #     # Basic checkout with parameter
-  #     - name: Checkout basic
-  #       uses: ./
-  #       with:
-  #         prefix: 'usr/local'
-
-          
