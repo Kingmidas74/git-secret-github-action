@@ -23,7 +23,7 @@ async function run(): Promise<number> {
 
     await exec.exec(
       'git clone',
-      ['https://github.com/sobolevn/git-secret.git', 'git-secret2'],
+      ['https://github.com/sobolevn/git-secret.git', 'git-secret'],
       options
     )
     await exec.exec('sudo make build -C ./git-secret')

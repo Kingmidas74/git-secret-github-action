@@ -38,7 +38,7 @@ jobs:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       if: success()
       id: has-changes
-      run: echo $([[ -n $(git status -s lib) ]] || echo '') >> $HAS_CHANGED
+      run: echo $([[ $(git status -s lib) ]] && echo '1' || echo '') >> $HAS_CHANGED
 
     - name: "Commit files"
       env:
