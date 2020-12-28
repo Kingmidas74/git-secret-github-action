@@ -29,9 +29,10 @@ jobs:
       with:
         node-version: '13.x'
 
-    - name: "install"
+    - name: "install && build"
       run: |
         npm i
+        npm run build
     
     - name: "check if build has changed"
       env:
