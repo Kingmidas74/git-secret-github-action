@@ -33,6 +33,7 @@ jobs:
       run: |
         npm i
         npm run build
+        sudo chmod -R 777 ./lib
     
     - name: "check if build has changed"
       env:
