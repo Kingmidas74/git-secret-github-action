@@ -70,6 +70,17 @@ jobs:
       run: |
         git push
 
+  test-after-bot:
+    runs-on: ubuntu-latest
+    needs: build-test
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          echo TEST
+      - run: |
+          ls -las
+          ls ./lib -las
+
   test-with-prefix: 
     runs-on: ubuntu-latest
     needs: build-test
@@ -78,6 +89,7 @@ jobs:
       - uses: ./
         with:
           prefix: "/usr/local-test"
+
   test-without-prefix:
     runs-on: ubuntu-latest
     needs: build-test
