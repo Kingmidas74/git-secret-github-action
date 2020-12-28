@@ -2,8 +2,8 @@
 name: "Install git-secret"
 description: "Install git secret from sources"
 branding:
-  color: blue
-  icon: code
+  color: orange
+  icon: github
 inputs:
   prefix:
     description: "prefix for installation"
