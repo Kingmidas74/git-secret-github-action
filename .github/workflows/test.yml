@@ -33,7 +33,6 @@ jobs:
       run: |
         npm i
         npm run build
-        sudo chmod -R 777 ./lib
     
     - name: "check if build has changed"
       env:
@@ -58,17 +57,18 @@ jobs:
           echo 'commit files 1'
           echo ${{ env.LIB_DIFF }}
           echo 'commit files 2'
+          sudo chmod -R 777 ./lib
           git config --local user.email "buildaction@bot.bot" 
           git config --local user.name "Build action bot"
           git add .
           git commit -m "build action"
-          git status
-          git pull
-          git status
 
     - name: "Push changes"
       if: ${{ env.LIB_DIFF }}
       run: |
+        git status
+        git diff
+        git status lib
         git push
 
   test-after-bot:
